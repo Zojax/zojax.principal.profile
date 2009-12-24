@@ -1,0 +1,28 @@
+<div class="z-form z-form-add"
+     tal:content="structure view/@@pagelet/form.view">
+</div>
+
+<form action="index.html" method="post"
+      tal:define="avatars context/values" tal:condition="avatars">
+  <div class="z-form-edit">
+    <h1>Avatar Gallery</h1>
+    <div>
+      <span tal:repeat="avatar avatars" style="padding-right: 1em">
+	<input type="radio" name="avatar"
+	       tal:attributes="value avatar/__name__; title avatar/title" />
+	<img tal:attributes="src avatar/@@absolute_url" />
+      </span>
+    </div>
+
+    <div class="z-form-controls">
+      <hr />
+      <input class="z-form-button" value="Set as default"
+	     type="submit" name="form.button.setDefault" />
+      <input class="z-form-removebutton" value="Remove avatar"
+	     type="submit" name="form.button.removeAvatar" />
+    </div>
+  </div>
+</form>
+
+<tal:block tal:repeat="context view/forms"
+	   tal:content="structure pagelet:form" />

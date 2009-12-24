@@ -1,0 +1,97 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zojax.principal.profile">
+
+  <!-- avatar views -->
+  <include file="avatar.zcml" />
+
+  <!-- user profile configlet -->
+  <zojax:pagelet
+     name="index.html"
+     for="..interfaces.IProfilesCategory"
+     class=".configlet.UserProfilesConfiglet"
+     permission="zojax.Configure" />
+
+  <!-- profile fields views -->
+  <browser:defaultView
+     name="context.html"
+     for="..interfaces.IProfileFields" />
+
+  <adapter factory=".profilefields.TableConfiguration" />
+
+  <zojax:pagelet
+     name="content"
+     type="wizard.step"
+     for="..interfaces.IProfileFields 
+	  zojax.content.forms.interfaces.IEditContentWizard"
+     class=".profilefields.FieldsConfig"
+     permission="zojax.Configure"
+     weight="120" />
+
+  <zojax:pagelet
+     name="categories"
+     type="wizard.step"
+     for="..interfaces.IProfileFields
+	  zojax.content.forms.interfaces.IEditContentWizard"
+     class=".profilefields.FieldCategories"
+     permission="zojax.Configure"
+     template="profilefieldcategories.pt"
+     provides="zojax.layoutform.interfaces.IPageletFormView"
+     weight="180" />
+
+  <!-- personal profile -->
+  <zojax:pagelet
+     type="preference.editGroup"
+     for="..interfaces.IPersonalProfile"
+     class=".preference.PersonalProfile"
+     permission="zojax.ModifyPreference" />
+
+  <zojax:pagelet
+     name="avatar"
+     type="form.subform"
+     for="..interfaces.IPersonalProfile .preference.PersonalProfile"
+     class=".preference.Avatar"
+     weight="10" />
+
+  <!-- Avatar term -->
+  <zojax:pagelet
+     type="pagelet"
+     for="..interfaces.IPersonalProfile
+	  z3c.form.interfaces.IForm * zojax.widget.radio.interfaces.ITermItem"
+     template="avatarpref.pt" />
+
+  <zojax:pagelet
+     name="0"
+     type="pagelet"
+     for="..interfaces.IPersonalProfile
+	  z3c.form.interfaces.IForm * zojax.widget.radio.interfaces.ITermItem"
+     template="avatartermcustom.pt" />
+
+  <!-- empty image -->
+  <browser:resource
+     name="profileEmptyImage.png" file="image.png" />
+
+  <browser:resource
+     name="avatarEmptyImage.png" file="avatar.png" />
+
+  <!-- personal photo -->
+  <adapter
+     name="profile.photo"
+     factory=".publisher.Photo" />
+
+  <class class=".publisher.Photo">
+    <allow interface="zope.publisher.interfaces.IPublishTraverse" />
+  </class>
+
+  <!-- profile fields for registration form -->
+  <zojax:pagelet
+     type="form.subform"
+     name="profileFields"
+     for="* zojax.principal.registration.interfaces.IMemberRegistrationForm"
+     class=".registration.RegistrationProfileFields"
+     zcml:condition="installed zojax.principal.registration" />
+
+</configure>

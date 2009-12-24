@@ -1,0 +1,19 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   i18n_domain="zojax.principal.profile">
+
+  <zojax:configlet
+     title="Personal emails"
+     name="principals.profile.personalemails"
+     schema=".interfaces.IPersonalEmailsConfiglet"
+     class=".mail.PersonalEmails"
+     permission="zojax.Configure" />
+
+  <utility
+     name="zojax.profile"
+     factory=".mail.PrincipalByEMail" />
+
+  <adapter factory=".mail.getPrincipalEMail" />
+
+</configure>
