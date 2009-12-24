@@ -1,0 +1,9 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope">
+
+  <!-- principal timezone -->
+  <adapter factory=".timezone.getRequestTimezone" />
+
+  <adapter factory=".timezone.getPrincipalTimezone" />
+
+</configure>

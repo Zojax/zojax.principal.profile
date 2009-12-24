@@ -1,0 +1,48 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zojax.principal.profile">
+
+  <!-- avatars configlet -->
+  <zojax:configlet
+     name="principals.profile.avatar"
+     title="Avatar Settings"
+     description="This area allows you to configure user avatar."
+     schema=".interfaces.IAvatarConfiglet"
+     class=".avatarconfiglet.ProfileAvatars"
+     provides="zope.app.container.interfaces.IContainerNamesContainer"
+     permission="zojax.Configure">
+    <require
+       permission="zope.View"
+       attributes="title description"
+       interface="zope.app.container.interfaces.IReadContainer" />
+
+    <require
+       permission="zojax.Configure"
+       interface="zope.app.container.interfaces.IWriteContainer" />
+  </zojax:configlet>
+
+  <zojax:content
+     name="profile.avatarscontainer"
+     title="Avatars container"
+     schema=".interfaces.IAvatarConfiglet"
+     class=".avatarconfiglet.ProfileAvatars"
+     contains="profile.avatar"
+     type="zojax.content.type.interfaces.IInactiveType" />
+
+  <!-- avatar -->
+  <zojax:content
+     name="profile.avatar"
+     title="Avatar"
+     schema=".interfaces.IAvatar"
+     containers="profile.avatarscontainer"
+     class=".avatar.Avatar" />
+
+  <class class=".avatar.Avatar">
+    <require
+       permission="zope.Public"
+       interface=".interfaces.IAvatar" />
+  </class>
+
+</configure>
