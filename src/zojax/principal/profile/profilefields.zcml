@@ -1,0 +1,56 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zojax.principal.profile">
+
+  <!-- Profile Fields configlet -->
+  <zojax:configlet
+     title="Profile Fields"
+     name="principals.profile.default"
+     schema=".interfaces.IProfileFields"
+     class=".profilefields.ProfileFields"
+     description="This area allows you to configure user profile fields."
+     provides="zojax.content.type.interfaces.IContainerContentsAware"
+     permission="zojax.Configure">
+
+    <require
+       permission="zojax.Configure"
+       interface="zope.app.container.interfaces.IWriteContainer" />
+    <require
+       permission="zope.View"
+       interface="zojax.content.type.interfaces.IItem
+		  zope.app.container.interfaces.IReadContainer" />
+  </zojax:configlet>
+
+  <!-- Profile Fields Container -->
+  <zojax:content
+     name="profile.fields"
+     title="Profile Fields"
+     schema=".interfaces.IProfileFields"
+     class=".profilefields.ProfileFields"
+     description="Container for profile fields."
+     type="zojax.content.type.interfaces.IInactiveType
+	   zojax.persistent.fields.interfaces.IFieldsContainer"
+     contains="zojax.persistent.fields.interfaces.IFieldType" />
+
+  <class class=".profilefields.ProfileFields">
+    <implements interface="zojax.content.type.interfaces.IOrderAware" />
+    <implements interface="zojax.content.type.interfaces.IContainerContentsAware" />
+  </class>
+
+  <zojax:reservedNames
+     for=".interfaces.IProfileFields"
+     names="firstname lastname email profileImage timezone" />
+
+  <adapter
+     for=".interfaces.IProfileFields"
+     provides="zojax.content.type.interfaces.IOrder"
+     factory="zojax.content.type.configlet.ConfigletContainerOrder" />
+
+  <!-- additional field schemas -->
+  <adapter
+     name="profile.field"
+     factory=".profilefields.ProfileFieldSchema" />
+
+</configure>

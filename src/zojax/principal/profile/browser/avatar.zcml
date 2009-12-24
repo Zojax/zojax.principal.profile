@@ -1,0 +1,55 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zojax.principal.profile">
+
+  <browser:defaultView
+     name="index.html"
+     for="..interfaces.IAvatarConfiglet" />
+
+  <zojax:pagelet
+     name="index.html"
+     for="..interfaces.IAvatarConfiglet"
+     class=".avatarconfiglet.Configlet"
+     permission="zope.Public" />
+
+  <zojax:pagelet
+     name="gallery"
+     type="form.subform"
+     for="..interfaces.IAvatarConfiglet .avatarconfiglet.Configlet"
+     class=".avatarconfiglet.AvatarGallery"
+     permission="zope.Public" 
+     weight="1" />
+
+  <zojax:pagelet
+     name="addavatar"
+     type="form.subform"
+     for="..interfaces.IAvatarConfiglet .avatarconfiglet.Configlet"
+     class=".avatarconfiglet.Avatars"
+     permission="zope.Public"
+     weight="2" />
+
+  <!-- Avatar -->
+  <browser:page
+     name="index.html"
+     for="..interfaces.IAvatar"
+     class=".avatarconfiglet.Avatar"
+     permission="zope.View" />
+
+  <adapter
+     name="profile.avatar"
+     factory=".publisher.Avatar" />
+
+  <class class=".publisher.Avatar">
+    <allow interface="zope.publisher.interfaces.IPublishTraverse" />
+  </class>
+
+  <!-- Avatar term -->
+  <zojax:pagelet
+     type="pagelet"
+     for="..interfaces.IAvatarConfiglet
+	  z3c.form.interfaces.IForm * zojax.widget.radio.interfaces.ITermItem"
+     template="avatarterm.pt" />
+
+</configure>
