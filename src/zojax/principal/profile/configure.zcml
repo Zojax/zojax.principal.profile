@@ -1,0 +1,105 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:zojax="http://namespaces.zope.org/zojax"
+   i18n_domain="zojax.principal.profile">
+
+  <permission
+     id="zojax.ManagerProfileFields"
+     title="Manage profile fields" />
+
+  <!-- configlet -->
+  <zojax:configlet
+     name="principals.profile"
+     schema=".interfaces.IProfilesCategory"
+     title="User profiles"
+     description="This area allows you to configure user profiles."
+     permission="zojax.Configure" />
+
+  <!-- profile fields -->
+  <include file="profilefields.zcml" />
+
+  <!-- avatar configlet -->
+  <include file="avatar.zcml" />
+
+  <!-- principal timezone -->
+  <include file="timezone.zcml" />
+
+  <!-- personal mail -->
+  <include file="mail.zcml" />
+
+  <!-- preference group -->
+  <zojax:preferenceGroup
+     id="profile"
+     title="Edit Profile"
+     description="These are all the preferences related to user personal profile."
+     schema=".interfaces.IPersonalProfile"
+     class=".preference.PersonalProfile"
+     tests="zojax.preferences.utils.isUser"
+     accesspermission="zope.Public">
+    <require
+       permission="zojax.ModifyPreference" attributes="setProfileData" />
+  </zojax:preferenceGroup>
+
+  <!-- login/register events -->
+  <subscriber
+     for="zojax.principal.registration.interfaces.IPrincipalRegisteredEvent"
+     handler=".preference.principalRegisteredHandler"
+     zcml:condition="installed zojax.principal.registration" />
+
+  <subscriber
+     for="zojax.authentication.interfaces.IPrincipalLoggedInEvent"
+     handler=".preference.principalLoggedinHandler"
+     zcml:condition="installed zojax.authentication" />
+
+  <!-- use photo as avatar -->
+  <subscriber handler=".preference.principalProfileModified" />
+
+  <!-- default IPrincipalInformation adapter -->
+  <adapter factory=".information.PrincipalInformation" />
+
+  <!-- registration fields configlet -->
+  <zojax:configlet
+     title="Registration Fields"
+     name="principals.profile.registration"
+     class=".registration.RegistrationFields"
+     schema=".interfaces.IRegistrationFields"
+     description="This area allows you to configure registration fields."
+     permission="zojax.Configure"
+     zcml:condition="installed zojax.principal.registration" />
+
+  <!-- vocabularies -->
+  <utility
+     name="profile.fields"
+     provides="zope.schema.interfaces.IVocabularyFactory"
+     factory=".vocabulary.ProfileFieldsVocabulary" />
+
+  <utility
+     name="profile.fieldCategories"
+     provides="zope.schema.interfaces.IVocabularyFactory"
+     factory=".vocabulary.CategoriesVocabulary" />
+
+  <utility
+     name="global.avatars"
+     factory=".vocabulary.GlobalAvatarsVocabulary" />
+
+  <utility
+     name="profile.avatars"
+     provides="zope.schema.interfaces.IVocabularyFactory"
+     factory=".vocabulary.AvatarsVocabulary" />
+
+  <utility
+     name="profile.prefs.avatars"
+     provides="zope.schema.interfaces.IVocabularyFactory"
+     factory=".vocabulary.PrefsAvatarsVocabulary" />
+
+  <!-- browser views -->
+  <include package=".browser" />
+
+  <!-- generations -->
+  <utility
+     name="zojax.principal.profile"
+     provides="zope.app.generations.interfaces.ISchemaManager"
+     component=".generations.schemaManager" />
+
+</configure>

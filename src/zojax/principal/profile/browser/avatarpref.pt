@@ -1,0 +1,13 @@
+<div class="z-listing-item" 
+     tal:define="form python:view.contexts[0];
+		 item python:view.contexts[-1];
+		 widget python:view.contexts[-2];">
+  <input type="radio"
+         tal:attributes="id item/id;
+                         name string:${widget/name}:list;
+                         title item/title;
+			 checked item/selected;
+			 value item/value;
+                         disabled widget/disabled;" />
+  <img tal:attributes="src string:${form/url}/@@profile.avatar/${item/value}" />
+</div>

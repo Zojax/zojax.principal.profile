@@ -1,0 +1,734 @@
+=============
+Browser tests
+=============
+
+    >>> from zope import component, interface, event
+    >>> from zope.testbrowser.testing import Browser
+    >>> from zope.lifecycleevent import ObjectCreatedEvent
+    >>> from zope.app.testing.functional import getRootFolder
+    >>> from zope.app.component.hooks import setSite
+    >>> from zope.app.intid import IntIds
+    >>> from zope.app.intid.interfaces import IIntIds
+    >>> from zojax.personal.space.manager import PersonalSpaceManager
+    >>> from zojax.personal.space.interfaces import IPersonalSpace, IPersonalSpaceManager
+    >>> from zojax.principal.profile import interfaces
+    >>> from zojax.principal.profile.tests.tests import getPath
+
+    >>> root = getRootFolder()
+    >>> setSite(root)
+
+    >>> root['ids'] = IntIds()
+    >>> root.getSiteManager().registerUtility(root['ids'], IIntIds)
+
+    >>> manager = PersonalSpaceManager(title=u'People')
+    >>> event.notify(ObjectCreatedEvent(manager))
+
+    >>> root['people'] = manager
+    >>> root.getSiteManager().registerUtility(root['people'], IPersonalSpaceManager)
+
+    >>> admin = Browser()
+    >>> admin.addHeader("Authorization", "Basic mgr:mgrpw")
+    >>> admin.handleErrors = False
+
+    >>> user = Browser()
+    >>> user.addHeader("Authorization", "Basic user:userpw")
+    >>> user.handleErrors = False
+
+    >>> from zope.security.management import newInteraction, endInteraction
+    >>> from zope.app.security.interfaces import IAuthentication
+    >>> from zojax.principal.registration.interfaces import PrincipalRegisteredEvent
+    >>> auth = component.getUtility(IAuthentication)
+    >>> principal = auth.getPrincipal('zope.user')
+
+    >>> newInteraction()
+
+    >>> IPersonalSpace(principal)
+    <zojax.personal.space.space.PersonalSpace ...>
+
+
+Principal events
+----------------
+
+    >>> profile = interfaces.IPersonalProfile(principal)
+    >>> profile.registered, profile.lastLoginTime
+    (None, None)
+
+Principal registration event
+
+    >>> event.notify(PrincipalRegisteredEvent(principal))
+
+Principal login event
+
+    >>> from zojax.authentication.interfaces import PrincipalLoggedInEvent
+    >>> event.notify(PrincipalLoggedInEvent(principal))
+
+    >>> profile.registered, profile.lastLoginTime
+    (datetime.datetime(...), datetime.datetime(...))
+
+    >>> endInteraction()
+
+
+User profiles configlet category
+--------------------------------
+
+    >>> admin.open("http://localhost/settings/")
+    >>> admin.getLink('User profiles').click()
+
+    >>> admin.getControl('Profile image width').value = '300'
+    >>> admin.getControl('Profile image height').value = '300'
+    >>> admin.getControl(name="form.buttons.save").click()
+
+    >>> admin.getLink('Profile Fields').click()
+    >>> admin.getLink('Field categories').click()
+
+    >>> admin.getControl(name='form.widget.category').value = 'Test category'
+    >>> admin.getControl(name='form.button.add').click()
+    >>> print admin.contents
+    <html>
+    ...<div class="statusMessage">Category has been added.</div>...
+    </html>
+
+    >>> admin.getControl(name='form.widget.category').value = 'Test category 2'
+    >>> admin.getControl(name='form.button.add').click()
+    >>> print admin.contents
+    <html>
+    ...<div class="statusMessage">Category has been added.</div>...
+    ...
+    <div>
+    <input type="checkbox" name="form.widget.categories:list"
+             value="Test category" /> Test category
+          </div>
+          <div>
+    <input type="checkbox" name="form.widget.categories:list"
+           value="Test category 2" /> Test category 2
+        </div>
+    ...
+    </html>
+
+We can move up/down, sort categories
+
+    >>> admin.getControl(name="form.widget.categories:list").value = ['Test category 2']
+    >>> admin.getControl(name='form.button.moveup').click()
+
+    >>> print admin.contents
+    <html>
+    ...<div class="statusMessage">Category has been moved.</div>...
+    ...
+    <div>
+    <input type="checkbox" name="form.widget.categories:list"
+           value="Test category 2" /> Test category 2
+        </div>
+        <div>
+    <input type="checkbox" name="form.widget.categories:list"
+           value="Test category" /> Test category
+        </div>
+    ...
+    </html>
+
+    >>> admin.getControl(name='form.button.sort').click()
+
+    >>> print admin.contents
+    <html>
+    ...<div class="statusMessage">Categories has been sorted.</div>...
+    ...
+    <div>
+    <input type="checkbox" name="form.widget.categories:list"
+             value="Test category" /> Test category
+          </div>
+          <div>
+    <input type="checkbox" name="form.widget.categories:list"
+           value="Test category 2" /> Test category 2
+        </div>
+    ...
+    </html>
+
+    >>> admin.getControl(name="form.widget.categories:list").value = ['Test category', 'Test category 2']
+    >>> admin.getControl(name='form.button.remove').click()
+    >>> print admin.contents
+    <html>
+    ...No field categories have been created...
+    </html>
+
+    >>> admin.getControl(name='form.widget.category').value = 'Test category'
+    >>> admin.getControl(name='form.button.add').click()
+    >>> admin.getLink('User profiles').click()
+
+
+First name, Last name, email
+----------------------------
+
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> user.getControl('First Name').value = 'Nikolay'
+    >>> user.getControl('Last Name').value = 'Kim'
+    >>> user.getControl('E-Mail').value = 'nkim@zojax.net'
+    >>> user.getControl(name="form.buttons.save").click()
+
+    >>> profile.firstname, profile.lastname, profile.email
+    (u'Nikolay', u'Kim', u'nkim@zojax.net')
+
+    >>> from zojax.mail.interfaces import IMailAddress
+    >>> from zojax.mail.utils import getPrincipalByEMail
+    >>> getPrincipalByEMail('nkim@zojax.net').id
+    'zope.user'
+
+    >>> IMailAddress(principal).address
+    u'nkim@zojax.net'
+
+    >>> user.getLink('Edit Profile').click()
+    >>> user.getControl('E-Mail').value = 'admin@zojax.net'
+    >>> user.getControl(name="form.buttons.save").click()
+
+    >>> profile.firstname, profile.lastname, profile.email
+    (u'Nikolay', u'Kim', u'admin@zojax.net')
+
+    >>> getPrincipalByEMail('nkim@zojax.net')
+    Traceback (most recent call last):
+    ...
+    PrincipalLookupError
+
+    >>> getPrincipalByEMail('admin@zojax.net').id
+    'zope.user'
+
+    >>> IMailAddress(principal).address
+    u'admin@zojax.net'
+
+
+Profile photo and Timezone
+--------------------------
+
+    >>> print profile.profileImage
+    None
+
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> fileControl = user.getControl('Profile image').mech_control
+    >>> fileControl.add_file(open(getPath('image.jpg')), filename='image.jpg')
+    >>> user.getControl('Timezone').value = ['Asia/Almaty']
+    >>> user.getControl(name="form.buttons.save").click()
+
+    >>> print profile.profileImage
+    <zojax.filefield.data.Image ...>
+
+    >>> profile.profileImage.width, profile.profileImage.height
+    (300, 300)
+
+    >>> profile.timezone
+    u'Asia/Almaty'
+
+    >>> from zope.interface.common.idatetime import ITZInfo
+    >>> ITZInfo(principal)
+    <DstTzInfo 'Asia/Almaty' LMT+5:08:00 STD>
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> request = TestRequest()
+    >>> request.setPrincipal(principal)
+
+    >>> ITZInfo(request)
+    <DstTzInfo 'Asia/Almaty' LMT+5:08:00 STD>
+
+
+Profile fields
+--------------
+
+    >>> admin.getLink('Profile Fields').click()
+    >>> admin.getLink('Text Line').click()
+    >>> admin.getControl('Title').value = u'Name'
+    >>> admin.getControl(name="content.add.widgets.required:list").value = ['false']
+    >>> admin.getControl(name="content.add.widgets.category:list").value = ['Test category']
+    >>> admin.getControl(name="content.add.buttons.add").click()
+    >>> admin.getControl(name="content.edit.buttons.cancel").click()
+
+    >>> admin.getLink('Text Line').click()
+    >>> admin.getControl('Title').value = u'Title'
+    >>> admin.getControl(name="content.add.widgets.required:list").value = ['false']
+    >>> admin.getControl(name="content.add.buttons.add").click()
+    >>> admin.getControl(name="content.edit.buttons.cancel").click()
+
+    >>> admin.getLink('Text Line').click()
+    >>> admin.getControl('Title').value = u'Company'
+    >>> admin.getControl(name="content.add.widgets.required:list").value = ['false']
+    >>> admin.getControl(name="content.add.buttons.add").click()
+    >>> admin.getControl(name="content.edit.buttons.cancel").click()
+
+    >>> print admin.contents
+    <html>
+    ...
+    <td><a href="http://localhost/settings/principals/profile/default/TextLine/context.html">TextLine</a></td>
+    ...
+    <td><a href="http://localhost/settings/principals/profile/default/TextLine-2/context.html">TextLine-2</a></td>
+    ...
+    <td><a href="http://localhost/settings/principals/profile/default/TextLine-3/context.html">TextLine-3</a></td>
+    ...
+    </html>
+
+    >>> fields = component.getUtility(interfaces.IProfileFields)
+    >>> for field in fields.getFields():
+    ...     print field.__name__, field, field.category
+    TextLine-3 <zojax.persistent.fields.fields.TextLine ...> None
+    TextLine <zojax.persistent.fields.fields.TextLine ...> Test category
+    TextLine-2 <zojax.persistent.fields.fields.TextLine ...> None
+
+    >>> for field in fields:
+    ...     print field
+    TextLine
+    TextLine-2
+    TextLine-3
+
+    >>> print fields.get('TextLine')
+    <zojax.persistent.fields.fields.TextLine ...>
+
+
+Let's check user profile
+
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> print user.contents
+    <html>
+    ...
+    ...<div class="z-form-group">
+    <div class="z-form-fieldset">
+      <div class="z-form-field">
+        <label for="category-widgets-TextLine-3">Company</label>
+          <div class="z-form-help"></div>
+          <div><input type="text" id="category-widgets-TextLine-3"
+               name="category.widgets.TextLine-3"
+               class="text-widget textline-field" value="" />
+        </div>
+      </div>
+      <div class="z-form-field">
+        <label for="category-widgets-TextLine-2">Title</label>
+        <div class="z-form-help"></div>
+        <div><input type="text" id="category-widgets-TextLine-2"
+           name="category.widgets.TextLine-2"
+           class="text-widget textline-field" value="" />
+        </div>
+      </div>
+    </div>
+    </div> <div class="z-form-group">
+      <h3 class="z-form-grouplabel">Test category</h3>
+      <div class="z-form-fieldset">
+        <div class="z-form-field">
+      <label for="category-widgets-TextLine">Name</label>
+      <div class="z-form-help"></div>
+      <div><input type="text" id="category-widgets-TextLine"
+           name="category.widgets.TextLine"
+           class="text-widget textline-field" value="" />
+    </div>
+    </div>
+    </div>
+    ...
+    </html>
+
+
+    >>> user.getControl(name="category.widgets.TextLine").value = u'My name'
+    >>> user.getControl('Title').value = u'My title'
+    >>> user.getControl('Company').value = u'My company'
+    >>> user.getControl(name="form.buttons.save").click()
+
+    >>> user.open("http://localhost/people/user/profile/")
+    >>> print user.contents
+    <html>
+    ...
+    <div class="z-form-group">
+      <div class="z-form-fieldset">
+        <div class="z-form-field">
+      <label for="form-widgets-TextLine-3">Company</label>
+      <div><span id="form-widgets-TextLine-3"
+          class="text-widget textline-field">My company</span>
+    </div>
+    </div> <div class="z-form-field">
+      <label for="form-widgets-TextLine-2">Title</label>
+      <div><span id="form-widgets-TextLine-2"
+          class="text-widget textline-field">My title</span>
+    </div>
+    </div>
+    </div>
+    </div> <div class="z-form-group">
+    <h3 class="z-form-grouplabel">Test category</h3>
+    <div class="z-form-fieldset">
+      <div class="z-form-field">
+         <label for="form-widgets-TextLine">Name</label>
+         <div><span id="form-widgets-TextLine"
+            class="text-widget textline-field">My name</span>
+         </div>
+      </div>
+    </div>
+    ...
+    </html>
+
+
+Fields config and order
+-----------------------
+
+    >>> admin.getLink('Fields ordering').click()
+    >>> admin.getControl(name='content.widgets.fields.from').displayOptions
+    ['Company', 'Name', 'Title']
+    >>> options = admin.getControl(name='content.widgets.fields.from').options
+
+If we haven't selected any of fields, then we see all fields
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> print user.contents
+    <html>
+    ...
+    ...<div class="z-form-group">
+    <div class="z-form-fieldset">
+      <div class="z-form-field">
+        <label for="category-widgets-TextLine-3">Company</label>
+          <div class="z-form-help"></div>
+          <div><input type="text" id="category-widgets-TextLine-3"
+               name="category.widgets.TextLine-3"
+               class="text-widget textline-field" value="My company" />
+        </div>
+      </div>
+      <div class="z-form-field">
+        <label for="category-widgets-TextLine-2">Title</label>
+        <div class="z-form-help"></div>
+        <div><input type="text" id="category-widgets-TextLine-2"
+           name="category.widgets.TextLine-2"
+           class="text-widget textline-field" value="My title" />
+        </div>
+      </div>
+    </div>
+    </div> <div class="z-form-group">
+      <h3 class="z-form-grouplabel">Test category</h3>
+      <div class="z-form-fieldset">
+        <div class="z-form-field">
+      <label for="category-widgets-TextLine">Name</label>
+      <div class="z-form-help"></div>
+      <div><input type="text" id="category-widgets-TextLine"
+           name="category.widgets.TextLine"
+           class="text-widget textline-field" value="My name" />
+    </div>
+    </div>
+    </div>
+    ...
+    </html>
+
+Let's select 'Company' field
+
+    >>> admin.open('?content.widgets.fields:list='+options[0]+'&content.edit.buttons.save=')
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> print user.contents
+    <html>
+    ...
+    ...<div class="z-form-group">
+      <div class="z-form-fieldset">
+        <div class="z-form-field">
+      <label for="category-widgets-TextLine-3">Company</label>
+      <div class="z-form-help"></div>
+      <div><input type="text" id="category-widgets-TextLine-3"
+           name="category.widgets.TextLine-3"
+           class="text-widget textline-field" value="My company" />
+    </div>
+    </div>
+    </div>
+    ...
+    </html>
+
+Let's select 'Title' then 'Company' fields
+
+    >>> admin.open('?content.widgets.fields:list='+options[2]+'&content.widgets.fields:list='+options[0]+'&content.edit.buttons.save=')
+    >>> admin.getControl(name='content.widgets.fields.to').displayOptions
+    ['Title', 'Company']
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> print user.contents
+    <html>
+    ...
+    ...<div class="z-form-group">
+      <div class="z-form-fieldset">
+        <div class="z-form-field">
+      <label for="category-widgets-TextLine-2">Title</label>
+      <div class="z-form-help"></div>
+      <div><input type="text" id="category-widgets-TextLine-2"
+           name="category.widgets.TextLine-2"
+           class="text-widget textline-field" value="My title" />
+    </div>
+    </div> <div class="z-form-field">
+      <label for="category-widgets-TextLine-3">Company</label>
+      <div class="z-form-help"></div>
+      <div><input type="text" id="category-widgets-TextLine-3"
+           name="category.widgets.TextLine-3"
+           class="text-widget textline-field" value="My company" />
+    </div>
+    </div>
+    ...
+    </html>
+
+
+Rename field
+------------
+
+    >>> admin.getLink('Contents').click()
+    >>> admin.getControl(name='ids:list').value = ['TextLine-3']
+    >>> admin.getControl(name='form.buttons.rename').click()
+
+    >>> field = fields['TextLine-3']
+    >>> fid = root['ids'].getId(field)
+    >>> oldvalue = profile.getProfileData()['TextLine-3']
+
+    >>> admin.getControl(name='newIds:list').value = u'TextLine10'
+    >>> admin.getControl(name="form.buttons.apply").click()
+
+    >>> field = fields['TextLine10']
+    >>> root['ids'].getId(field) == fid
+    True
+    >>> oldvalue == profile.getProfileData()['TextLine10']
+    True
+
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> print user.contents
+    <html>
+    ...
+    <div><input type="text" id="category-widgets-TextLine10"
+           name="category.widgets.TextLine10"
+           class="text-widget textline-field" value="My company" />
+    ...
+    </html>
+
+
+Remove field
+------------
+
+    >>> admin.getLink('Contents').click()
+    >>> admin.getControl(name='ids:list').value = ['TextLine10']
+    >>> admin.getControl(name="form.buttons.delete").click()
+
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> 'name="form.widgets.TextLine-3"' in user.contents
+    False
+
+
+Avatar settings configlet
+-------------------------
+
+    >>> admin.getLink('Avatar Settings').click()
+    >>> admin.getControl('Maximum Image Width').value = '100'
+    >>> admin.getControl('Maximum Image Height').value = '100'
+    >>> admin.getControl(name="form.buttons.save").click()
+
+    >>> configlet = component.getUtility(interfaces.IAvatarConfiglet)
+    >>> configlet.maxWidth, configlet.maxHeight
+    (100, 100)
+
+Upload avatar
+
+    >>> fileControl = admin.getControl(name="upload.widgets.data").mech_control
+    >>> fileControl.add_file(open(getPath('image.jpg')), filename='image.jpg')
+    >>> admin.getControl(name="upload.buttons.upload").click()
+
+    >>> print admin.contents
+    <html>
+    ...
+    <h1 class="z-form-label">Avatar Gallery</h1><div class="z-form-fieldset">
+      <div class="z-form-field">
+      <label for="gallery-widgets-avatar" title="">Select avatar</label>
+      <div class="z-form-help"></div>
+      <div><ul class="z-hlisting">
+        <li><div class="z-listing-item">
+           <input type="radio" id="gallery-widgets-avatar-0" name="gallery.widgets.avatar:list" title="..." value="..." />
+           <img src="http://localhost/@@profile.avatar/..." class="" />
+          </div></li>
+      </ul>
+      <div style="clear: both;">
+        <input name="gallery.widgets.avatar-empty-marker"
+               type="hidden" value="1" />
+      </div>
+    </div>
+    ...
+    </html>
+
+uploaded avatar is scaled
+
+    >>> avatar = configlet[configlet.keys()[0]]
+    >>> avatar.data.width, avatar.data.height
+    (100, 100)
+
+    >>> from zope.app.intid.interfaces import IIntIds
+    >>> ids = component.getUtility(IIntIds)
+
+    >>> aid = ids.getId(avatar)
+
+we can view avatar
+
+    >>> user.open('http://localhost/@@profile.avatar/%s'%aid)
+    >>> user.contents[:10]
+    '\xff\xd8\xff\xe0\x00\x10JFIF'
+
+upload second avatar
+
+    >>> fileControl = admin.getControl('File').mech_control
+    >>> fileControl.add_file(open(getPath('image.jpg')), filename='image1.jpg')
+    >>> admin.getControl(name="upload.buttons.upload").click()
+
+    >>> aid2 = ids.getId(configlet[configlet.keys()[1]])
+
+set first avatar as default
+
+    >>> admin.getControl("Set as default").click()
+    >>> print admin.contents
+    <html>
+    ...<div class="statusWarningMessage">Please select avatar.</div>...
+    </html>
+
+    >>> admin.getControl(name="gallery.widgets.avatar:list").value = [str(aid)]
+    >>> admin.getControl("Set as default").click()
+
+    >>> configlet.default == aid
+    True
+
+now we can get user avatar
+
+    >>> profile.avatarUrl(request) == 'http://127.0.0.1/@@profile.avatar/%s'%aid
+    True
+
+select different user avatar
+
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> user.getControl(name="form.widgets.avatar:list").value = [str(aid2)]
+    >>> user.getControl(name="form.buttons.save").click()
+
+    >>> profile.avatarUrl(request) == 'http://127.0.0.1/@@profile.avatar/%s/99968e477ecdbe642e70a6f3d07fdb1f'%aid2
+    True
+
+    >>> user.open('http://127.0.0.1/@@profile.avatar/%s/99968e477ecdbe642e70a6f3d07fdb1f'%aid2)
+    >>> user.contents[:10]
+    '\xff\xd8\xff\xe0\x00\x10JFIF'
+
+
+Upload custom avatar
+
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> fileControl = user.getControl(
+    ...     name="form.widgets.avatarImage").mech_control
+    >>> fileControl.add_file(open(getPath('image.jpg')), filename='image2.jpg')
+    >>> user.getControl(name="form.buttons.save").click()
+
+uploaded avatar is scaled
+
+    >>> profile.avatarImage
+    <zojax.filefield.data.Image ...>
+
+    >>> profile.avatarImage.width, profile.avatarImage.height
+    (100, 100)
+
+select custom avatar
+
+    >>> user.getLink('Edit Profile').click()
+    >>> user.getControl(name="form.widgets.avatar:list").value = ['0']
+    >>> user.getControl(name="form.buttons.save").click()
+
+    >>> profile.avatarUrl(request)
+    'http://127.0.0.1/@@profile.avatar/zope.user/99968e477ecdbe642e70a6f3d07fdb1f'
+
+    >>> user.open('http://127.0.0.1/@@profile.avatar/zope.user')
+    >>> user.contents[:10]
+    '\xff\xd8\xff\xe0\x00\x10JFIF'
+
+    >>> user.open('http://127.0.0.1/@@profile.avatar/zope.user.unknown')
+    Traceback (most recent call last):
+    ...
+    NotFound: ...
+
+
+Disabled default avatars
+
+    >>> admin.getControl(name="form.widgets.enabled:list").value = ['false']
+    >>> admin.getControl(name="form.buttons.save").click()
+
+use can select only custom avatar
+
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> print user.contents
+    <html>
+    ...
+    <div class="z-form-fieldset">
+      <div class="z-form-field">
+        <label for="form-widgets-avatar" title="">Avatar</label>
+        <div class="z-form-help"></div>
+        <div><ul class="z-hlisting">
+          <li><div class="z-listing-item">
+            <input type="radio" id="form-widgets-avatar-0" name="form.widgets.avatar:list" title="0" checked="True" value="0" />
+            <img class="z-listing-selected" src="http://localhost/@@profile.avatar/zope.user" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+          </div></li>
+        </ul>
+        <div style="clear: both;">
+            <input name="form.widgets.avatar-empty-marker"
+                type="hidden" value="1" />
+        </div>
+      </div>
+    ...
+    </html>
+
+Remove avatar
+
+    >>> admin.getControl("Remove avatar").click()
+    >>> print admin.contents
+    <html>
+    ...<div class="statusWarningMessage">Please select avatar.</div>...
+    </html>
+
+    >>> admin.getControl(name="gallery.widgets.avatar:list").value = [str(aid)]
+    >>> admin.getControl("Remove avatar").click()
+    >>> print admin.contents
+    <html>
+    ...<div class="statusMessage">Avatar has been removed.</div>...
+    </html>
+
+    >>> setSite(None)
+
+
+Photo as avatar
+---------------
+
+    >>> admin.getLink('User profiles').click()
+    >>> admin.getControl(name="form.widgets.photoAsAvatar:list").value = ['true']
+    >>> admin.getControl('Save').click()
+
+user can't upload avatar
+
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> user.getControl(name="form.widgets.avatar:list")
+    Traceback (most recent call last):
+    ...
+    LookupError: name 'form.widgets.avatar:list'
+
+
+Enable/disable avatars
+----------------------
+
+    >>> admin.getLink('User profiles').click()
+    >>> admin.getControl(name="form.widgets.enableAvatars:list").value = ['false']
+    >>> admin.getControl('Save').click()
+
+user can't upload avatar
+
+    >>> user.open("http://localhost/people/user/profile/profile/")
+    >>> user.getControl(name="form.widgets.avatar:list")
+    Traceback (most recent call last):
+    ...
+    LookupError: name 'form.widgets.avatar:list'
+
+and user's avatar is always default one
+
+    >>> user.open('http://127.0.0.1/@@profile.avatar/zope.user')
+    >>> user.contents[:10]
+    '\x89PNG\r\n\x1a\n\x00\x00'
+
+
+Photo publisher
+---------------
+
+    >>> profile.photoUrl(request)
+    'http://127.0.0.1/@@profile.photo/zope.user/...'
+
+    >>> user.open('http://localhost/@@profile.photo/zope.user')
+    >>> user.contents[:10]
+    '\xff\xd8\xff\xe0\x00\x10JFIF'
+
+    >>> user.open('http://localhost/@@profile.photo/zope.user/b466a87093766d474267fb05e2997336')
+    >>> user.contents[:10]
+    '\xff\xd8\xff\xe0\x00\x10JFIF'
+
+    >>> user.open('http://localhost/@@profile.photo/unknown.user')
+    Traceback (most recent call last):
+    ...
+    NotFound: ...

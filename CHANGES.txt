@@ -1,0 +1,104 @@
+=======
+CHANGES
+=======
+
+0.7.2 (Unreleased)
+------------------
+
+- Added 'Enable avatars' feature
+
+
+0.7.1 (Unreleased)
+------------------
+
+- Fixed vocabulary bug during generation evolve
+
+
+0.7.0 (2009-10-16)
+------------------
+
+- Profile fields ordering and site hierarchy-awareness added
+
+- Added migration
+
+
+0.6.1 (2009-10-14)
+------------------
+
+- Added 'modified' attribute to IPersonalProfile, it indicates last modified time
+
+
+0.6.0 (2009-10-12)
+------------------
+
+- Added 'Use photo as avatar' feature
+
+- Added 'photoUrl' method to IPersonalProfile, it generates personal photo url
+
+- Added 'profile.photo' view, shows personal photo
+
+- Generate unique url for avatar image
+
+- Send object modified event in preference edit form
+
+
+0.5.2 (2009-08-11)
+------------------
+
+- Change lastLoginTime only if prev value older then 60 seconds
+
+
+0.5.1 (2009-07-15)
+------------------
+
+- Update test for chameleon enabled setup
+
+- Profile field categories ordering added
+
+
+0.5.0 (2009-06-21)
+------------------
+
+- profileData default value fixed
+
+- 'zojax.principal.registration' is optional
+
+
+0.4.0 (2009-05-26)
+------------------
+
+- Added 'space' attribute to personal profile, it uses IPersonalSpaceService to find space
+
+- Copyright changed to 'Zope Foundation and Contributors'
+
+
+0.3.1 (2009-05-21)
+------------------
+
+- Use new zojax.converter api
+
+
+0.3.0 (2009-05-05)
+------------------
+
+- Added 'title' attribute to profile
+
+- New default avatar images
+
+- Do not use z3c.autoinclude
+
+
+0.2.0 (2009-03-24)
+------------------
+
+- Fixed avatar preference config form
+
+- Fixed missing import in avatar configlet form
+
+- Do not show registration fields form if there are no fields
+
+
+0.1.0 (2009-03-15)
+------------------
+
+- Initial release.

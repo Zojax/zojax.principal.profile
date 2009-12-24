@@ -1,0 +1,44 @@
+<tal:block i18n:domain="zojax.principal.profile">
+  <h2 i18n:translate="">Categories</h2>
+
+  <div class="z-form-fieldset">
+    <tal:block condition="not:view/categories" i18n:translate="">
+      No field categories have been created.
+    </tal:block>
+    <div tal:condition="view/categories">
+      <div tal:repeat="cat view/categories">
+	<input type="checkbox" name="form.widget.categories:list"
+               tal:attributes="value cat" /> <tal:block content="cat" />
+      </div>
+    </div>
+  </div>
+
+  <div class="z-form-controls" tal:condition="view/categories">
+    <hr />
+    <input type="submit" value="Remove" name="form.button.remove"
+	   class="z-form-button z-form-removebutton"
+	   i18n:attributes="value" />
+    <tal:block condition="python:len(view.categories)>1">
+      <input type="submit" value="Move up" name="form.button.moveup"
+	     class="z-form-button z-form-moveupbutton"
+	     i18n:attributes="value" />
+      <input type="submit" value="Move down" name="form.button.movedown"
+	     class="z-form-button z-form-movedownbutton"
+	     i18n:attributes="value" />
+      <input type="submit" value="Sort" name="form.button.sort"
+	     class="z-form-button z-form-sortbutton"
+	     i18n:attributes="value" />
+    </tal:block>
+  </div>
+
+  <div class="z-form-field">
+    <h4 i18n:translate="">Add category</h4>
+    <div>
+      <input type="text" name="form.widget.category"
+             tal:attributes="value request/form.widget.category|nothing" />
+    </div>
+    <hr />
+    <input type="submit" value="Add" i18n:attributes="value"
+	   name="form.button.add" class="z-form-addbutton" />
+  </div>
+</tal:block>

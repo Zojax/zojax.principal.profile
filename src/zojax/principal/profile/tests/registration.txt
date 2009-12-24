@@ -1,0 +1,152 @@
+=============
+Browser tests
+=============
+
+    >>> from zope import component
+    >>> from zope.testbrowser.testing import Browser
+    >>> from zope.app.testing.functional import getRootFolder
+    >>> from zope.app.component.hooks import setSite
+    >>> from zope.app.intid import IntIds
+    >>> from zope.app.intid.interfaces import IIntIds
+    >>> from zojax.principal.profile import interfaces
+    >>> from zojax.principal.profile.tests.tests import getPath
+
+    >>> root = getRootFolder()
+    >>> setSite(root)
+
+    >>> root['ids'] = IntIds()
+    >>> root.getSiteManager().registerUtility(root['ids'], IIntIds)
+
+    >>> admin = Browser()
+    >>> admin.addHeader("Authorization", "Basic mgr:mgrpw")
+    >>> admin.handleErrors = False
+
+First we need create several fields
+
+    >>> admin.open("http://localhost/settings/")
+    >>> admin.getLink('User profiles').click()
+    >>> admin.getLink('Profile Fields').click()
+
+    >>> admin.getLink('Text Line').click()
+    >>> admin.getControl('Title').value = u'Name'
+    >>> admin.getControl(name="content.add.widgets.required:list").value = ['true']
+    >>> admin.getControl('Content short name').value = u'name'
+    >>> admin.getControl(name="content.add.buttons.add").click()
+    >>> admin.getControl(name="content.edit.buttons.cancel").click()
+
+    >>> admin.getLink('Text Line').click()
+    >>> admin.getControl('Title').value = u'Title'
+    >>> admin.getControl(name="content.add.widgets.required:list").value = ['false']
+    >>> admin.getControl(name="content.add.widgets.required:list").value = ['false']
+    >>> admin.getControl('Content short name').value = u'title'
+    >>> admin.getControl(name="content.add.buttons.add").click()
+    >>> admin.getControl(name="content.edit.buttons.cancel").click()
+
+
+Configure registrations fields
+
+    >>> admin.getLink('Registration Fields').click()
+    >>> print admin.contents
+    <html>
+    ...
+    <option value="...">Name</option>
+    <option value="...">Title</option>
+    ...
+    </html>
+
+    >>> values = admin.getControl(name='form.widgets.fields.from').options
+
+    >>> configlet = component.getUtility(interfaces.IRegistrationFields)
+    >>> configlet.fields = map(int, values)
+
+Setup registration method, for testing use one from
+zojax.principalfolder package
+
+    >>> admin.getLink('System configuration').click()
+    >>> admin.getLink('Authentication').click()
+    >>> admin.getControl('Install').click()
+    >>> admin.getControl(name="factory_ids:list").value = ['principal.users']
+    >>> admin.getControl(name="form.install").click()
+
+    >>> from zojax.principal.registration.interfaces import IPortalRegistration
+    >>> regs = component.getUtility(IPortalRegistration)
+    >>> regs.actions = ['zojax-principal-users']
+
+Now let's sugnup
+
+    >>> user = Browser()
+    >>> user.handleErrors = False
+    >>> user.open("http://localhost/join.html")
+
+here our fields
+
+    >>> print user.contents
+    <html>
+    ...
+    ...<div class="z-form-group">
+      <div class="z-form-fieldset">
+        <div class="z-form-field">
+           <label for="profile-widgets-name"...>Name</label>
+           <span class="z-form-fieldRequired">&nbsp;</span>
+           <div class="z-form-help"></div>
+           <div><input type="text" id="profile-widgets-name"
+               name="profile.widgets.name"
+               class="text-widget required textline-field" value="" />
+           </div>
+        </div> <div class="z-form-field">
+           <label for="profile-widgets-title"...>Title</label>
+           <div class="z-form-help"></div>
+           <div><input type="text" id="profile-widgets-title"
+               name="profile.widgets.title"
+               class="text-widget textline-field" value="" />
+           </div>
+        </div>
+      </div>
+    </div>
+    ...
+    </html>
+
+    >>> user.getControl('First Name').value = u'Nikolay'
+    >>> user.getControl('Last Name').value = u'Kim'
+    >>> user.getControl('E-mail/Login').value = u'fafhrd91@gmail.com'
+    >>> user.getControl('New password').value = u'12345'
+    >>> user.getControl('Confirm password').value = u'12345'
+    >>> user.getControl('Register').click()
+
+    >>> print user.contents
+    <html>
+    ...
+    ...<div class="statusStopMessage">Please fix indicated errors.</div>...
+    ...
+    <label for="profile-widgets-name"...>Name</label>
+    <span class="z-form-fieldRequired">&nbsp;</span>
+    <div class="error">Required input is missing.</div>
+    ...
+    </html>
+
+    >>> user.getControl('First Name').value = u'Nikolay'
+    >>> user.getControl('Last Name').value = u'Kim'
+    >>> user.getControl('E-mail/Login').value = u'fafhrd91@gmail.com'
+    >>> user.getControl('New password').value = u'12345'
+    >>> user.getControl('Confirm password').value = u'12345'
+    >>> user.getControl(name="profile.widgets.name").value = u'Test name'
+    >>> user.getControl(name="profile.widgets.title").value = u'Test title'
+    >>> user.getControl('Register').click()
+
+Let's check profile fields
+
+    >>> from zope.app.security.interfaces import IAuthentication
+    >>> auth = component.getUtility(IAuthentication)
+
+    >>> pid = auth.prefix + 'zojax.pf' + list(auth['principal.users'].keys())[-1]
+    >>> principal = auth.getPrincipal(pid)
+
+    >>> from zojax.principal.profile.interfaces import IPersonalProfile
+    >>> profile = IPersonalProfile(principal)
+    >>> profile.getProfileData()['name']
+    u'Test name'
+
+    >>> profile.getProfileData()['title']
+    u'Test title'
+
+    >>> setSite(None)
