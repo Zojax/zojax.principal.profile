@@ -63,7 +63,6 @@ Configure registrations fields
 Setup registration method, for testing use one from
 zojax.principalfolder package
 
-    >>> admin.getLink('System configuration').click()
     >>> admin.getLink('Authentication').click()
     >>> admin.getControl('Install').click()
     >>> admin.getControl(name="factory_ids:list").value = ['principal.users']
