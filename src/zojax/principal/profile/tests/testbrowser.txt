@@ -232,7 +232,7 @@ Profile fields
     >>> admin.getLink('Profile Fields').click()
     >>> admin.getLink('Text Line').click()
     >>> admin.getControl('Title').value = u'Name'
-    >>> admin.getControl(name="content.add.widgets.required:list").value = ['false']
+    >>> admin.getControl(name="content.add.widgets.required:list").value = ['true']
     >>> admin.getControl(name="content.add.widgets.category:list").value = ['Test category']
     >>> admin.getControl(name="content.add.buttons.add").click()
     >>> admin.getControl(name="content.edit.buttons.cancel").click()
@@ -311,11 +311,12 @@ Let's check user profile
       <div class="z-form-fieldset">
         <div class="z-form-field">
       <label for="category-widgets-TextLine">Name</label>
+      <span class="z-form-fieldRequired">&nbsp;</span>
       <div class="z-form-help"></div>
       <div>
          <input id="category-widgets-TextLine"
            name="category.widgets.TextLine"
-           class="text-widget textline-field" value=""
+           class="text-widget required textline-field" value=""
            type="text" />
     </div>
     </div>
@@ -356,13 +357,29 @@ Let's check user profile
          <label for="form-widgets-TextLine">Name</label>
          <div>
            <span id="form-widgets-TextLine"
-            class="text-widget textline-field">My name</span>
+            class="text-widget required textline-field">My name</span>
          </div>
       </div>
     </div>
     ...
     </html>
 
+
+Profile completeness
+--------------------
+
+Should be complete if all required fields are set
+    >>> profile.isComplete()
+    True
+
+And no if there are empty fields
+    >>> profile.setProfileData({'TextLine': None})
+    ['TextLine']
+    >>> profile.isComplete()
+    False
+
+    >>> profile.setProfileData({'TextLine': 'My name'})
+    ['TextLine']
 
 Fields config and order
 -----------------------
@@ -405,11 +422,12 @@ If we haven't selected any of fields, then we see all fields
       <div class="z-form-fieldset">
         <div class="z-form-field">
       <label for="category-widgets-TextLine">Name</label>
+      <span class="z-form-fieldRequired">&nbsp;</span>
       <div class="z-form-help"></div>
       <div>
         <input id="category-widgets-TextLine"
            name="category.widgets.TextLine"
-           class="text-widget textline-field" value="My name"
+           class="text-widget required textline-field" value="My name"
            type="text" />
     </div>
     </div>

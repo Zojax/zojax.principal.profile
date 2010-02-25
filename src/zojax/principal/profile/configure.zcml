@@ -92,6 +92,11 @@
      name="profile.prefs.avatars"
      provides="zope.schema.interfaces.IVocabularyFactory"
      factory=".vocabulary.PrefsAvatarsVocabulary" />
+     
+  <!-- checker -->
+  <adapter
+     name="zojax.principal.profile-basicCompleteChecker"
+     factory=".checker.BasicChecker" />
 
   <!-- browser views -->
   <include package=".browser" />
@@ -101,5 +106,6 @@
      name="zojax.principal.profile"
      provides="zope.app.generations.interfaces.ISchemaManager"
      component=".generations.schemaManager" />
+  
 
 </configure>

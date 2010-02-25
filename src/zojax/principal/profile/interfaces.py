@@ -170,7 +170,20 @@ class IPersonalProfile(IPreferenceCategory):
 
     def setProfileData(data):
         """Save profile data."""
+        
+    def isComplete():
+        """is profile complete"""
 
+
+class IPersonalProfileCompleteChecker(interface.Interface):
+    """ check if profile is complete """
+
+    def __init__(context):
+        """ init """
+
+    def check():
+        """ check """
+        
 
 class IPersonalSpaceService(interface.Interface):
     """ personal space service """

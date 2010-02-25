@@ -114,7 +114,7 @@ here our fields
     >>> user.getControl('First Name').value = u'Nikolay'
     >>> user.getControl('Last Name').value = u'Kim'
     >>> user.getControl('E-mail/Login').value = u'fafhrd91@gmail.com'
-    >>> user.getControl('New password').value = u'12345'
+    >>> user.getControl('Password').value = u'12345'
     >>> user.getControl('Confirm password').value = u'12345'
     >>> user.getControl('Register').click()
 
@@ -132,7 +132,7 @@ here our fields
     >>> user.getControl('First Name').value = u'Nikolay'
     >>> user.getControl('Last Name').value = u'Kim'
     >>> user.getControl('E-mail/Login').value = u'fafhrd91@gmail.com'
-    >>> user.getControl('New password').value = u'12345'
+    >>> user.getControl('Password').value = u'12345'
     >>> user.getControl('Confirm password').value = u'12345'
     >>> user.getControl(name="profile.widgets.name").value = u'Test name'
     >>> user.getControl(name="profile.widgets.title").value = u'Test title'

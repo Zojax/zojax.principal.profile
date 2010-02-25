@@ -29,7 +29,7 @@ from zc.copy import copy
 from zojax.converter.api import convert
 from zojax.converter.interfaces import ConverterException
 
-from interfaces import IProfilesCategory
+from interfaces import IProfilesCategory, IPersonalProfileCompleteChecker
 from interfaces import IPrincipalInformation, IPersonalSpaceService
 from interfaces import IPersonalProfile, IProfileFields, IAvatarConfiglet
 
@@ -95,9 +95,11 @@ class PersonalProfile(object):
         changes = []
 
         for field in fields:
+            if field.__name__ not in data:
+                continue
             name = field.__name__
             id = intids.getId(field)
-            value = data.get(name, field.default)
+            value = data[name] or field.default
 
             if profileData.get(id) != value:
                 changes.append(name)
@@ -137,6 +139,15 @@ class PersonalProfile(object):
                     return '%s/%s'%(url, self.__principal__.id, )
             else:
                 return '%s/%s/%s'%(url, self.avatar, avatar.data.hash)
+
+    def isComplete(self):
+        
+        for name, adapter in component.getAdapters(
+            (self,), IPersonalProfileCompleteChecker):
+            if not adapter.check():
+                return False
+
+        return True
 
 
 def principalRegisteredHandler(event):
