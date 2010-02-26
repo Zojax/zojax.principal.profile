@@ -99,7 +99,7 @@ class PersonalProfile(object):
                 continue
             name = field.__name__
             id = intids.getId(field)
-            value = data[name] or field.default
+            value = data[name]
 
             if profileData.get(id) != value:
                 changes.append(name)
