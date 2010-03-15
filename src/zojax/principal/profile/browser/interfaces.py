@@ -39,4 +39,4 @@ class IPrincipalInformationForm(interface.Interface):
     email = PersonalEmailField(
         title = _(u'E-Mail'),
         description = _(u'Enter your e-mail address. It will be used as address for email notifications.'),
-        required = False)
+        required = True)
