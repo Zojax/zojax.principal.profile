@@ -25,7 +25,7 @@ from interfaces import IPersonalProfileCompleteChecker, IPersonalProfile, \
 
 
 class BasicChecker(object):
-    
+
     component.adapts(IPersonalProfile)
     interface.implements(IPersonalProfileCompleteChecker)
 
@@ -34,16 +34,16 @@ class BasicChecker(object):
 
     def check(self):
         intids = component.getUtility(IIntIds)
-        profileData = self.context.profileData
-        
+        profileData = self.context.getProfileData()
+
         for field in component.getUtility(IProfileFields).getFields():
             id = intids.getId(field)
             if field.required and \
                 profileData.get(id, getattr(field, 'default', None)) == \
                 getattr(field, 'missing_value', None):
                 return False
-            
+
         return bool(self.context.firstname) \
                and bool(self.context.lastname) \
                and bool(self.context.email)
-               
+
