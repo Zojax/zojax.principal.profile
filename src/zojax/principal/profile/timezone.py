@@ -21,6 +21,8 @@ from zope.security.interfaces import IPrincipal
 from zope.interface.common.idatetime import ITZInfo
 from zope.publisher.interfaces.browser import IBrowserRequest
 
+from zojax.formatter.interfaces import IFormatterConfiglet
+
 from interfaces import IPersonalProfile
 
 
@@ -33,6 +35,7 @@ def getPrincipalTimezone(principal):
             return timezone(prefs.timezone)
         except:
             pass
+    return timezone(component.getUtility(IFormatterConfiglet).timezone)
 
 
 @component.adapter(IBrowserRequest)
