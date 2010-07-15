@@ -37,7 +37,7 @@ class BasicChecker(object):
         profileData = self.context.getProfileData()
 
         for field in component.getUtility(IProfileFields).getFields():
-            id = intids.getId(field)
+            id = field.__name__
             if field.required and \
                 profileData.get(id, getattr(field, 'default', None)) == \
                 getattr(field, 'missing_value', None):
