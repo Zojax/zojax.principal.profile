@@ -95,9 +95,12 @@ class AvatarsVocabulary(object):
                 request = part
                 break
 
-        if request is not None:
-            profile = IPersonalProfile(request.principal)
-
+        if context is not None:
+            profile = context
+            if profile.avatarImage:
+                terms.append(SimpleTerm(0, '0', '0'))
+        elif request is not None:
+            profile = profile = IPersonalProfile(request.principal)
             if profile.avatarImage:
                 terms.append(SimpleTerm(0, '0', '0'))
 
@@ -107,7 +110,6 @@ class AvatarsVocabulary(object):
             for name, avatar in configlet.items():
                 id = ids.queryId(avatar)
                 terms.append(SimpleTerm(id, str(id), str(id)))
-
         return Vocabulary(terms)
 
 

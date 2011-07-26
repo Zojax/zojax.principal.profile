@@ -9,5 +9,6 @@
 			 checked item/selected;
 			 value item/value;
                          disabled widget/disabled;" />
-  <img tal:attributes="src string:${form/url}/@@profile.avatar/${item/value}" />
+  <img tal:define="n python:modules['random'].randint(0,65535)"
+       tal:attributes="src string:${form/url}/@@profile.avatar/${item/value}?${n}" />
 </div>

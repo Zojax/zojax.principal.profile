@@ -116,7 +116,8 @@ class PersonalProfile(PageletEditForm):
         self.context.timezone = data['timezone']
 
         if 'profileImage' in data and \
-                not IFileDataNoValue.providedBy(data['profileImage']):
+                not IFileDataNoValue.providedBy(data['profileImage']) and \
+                data['profileImage'] is not None:
             image = Image()
             image.data = data['profileImage'].data
             image.mimeType = data['profileImage'].mimeType
@@ -228,13 +229,12 @@ class Avatar(PageletEditSubForm):
         data, errors = self.extractData()
         if not errors:
             self.context.avatar = data['avatar']
-
             if 'avatarImage' in data and \
                     not IFileDataNoValue.providedBy(data['avatarImage']):
                 image = Image()
                 image.data = data['avatarImage'].data
                 image.mimeType = data['avatarImage'].mimeType
-
+                
                 configlet = getUtility(IAvatarConfiglet)
                 if (image.width > configlet.maxWidth or
                     image.height > configlet.maxHeight):
@@ -253,5 +253,5 @@ class Avatar(PageletEditSubForm):
                         self.context.avatarImage = image
                 else:
                     self.context.avatarImage = image
-
+                
                 self.context.avatar = 0
