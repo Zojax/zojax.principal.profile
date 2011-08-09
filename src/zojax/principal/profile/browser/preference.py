@@ -229,8 +229,7 @@ class Avatar(PageletEditSubForm):
         data, errors = self.extractData()
         if not errors:
             self.context.avatar = data['avatar']
-            if 'avatarImage' in data and \
-                    not IFileDataNoValue.providedBy(data['avatarImage']):
+            if data.get('avatarImage') is not None:
                 image = Image()
                 image.data = data['avatarImage'].data
                 image.mimeType = data['avatarImage'].mimeType
