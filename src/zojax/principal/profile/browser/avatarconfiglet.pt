@@ -5,7 +5,7 @@
 <form action="index.html" method="post"
       tal:define="avatars context/values" tal:condition="avatars">
   <div class="z-form-edit">
-    <h1>Avatar Gallery</h1>
+    <h1 i18n:translate="">Avatar Gallery</h1>
     <div>
       <span tal:repeat="avatar avatars" style="padding-right: 1em">
 	<input type="radio" name="avatar"
@@ -16,9 +16,9 @@
 
     <div class="z-form-controls">
       <hr />
-      <input class="z-form-button" value="Set as default"
+      <input class="z-form-button" value="Set as default" i18n:attributes="value"
 	     type="submit" name="form.button.setDefault" />
-      <input class="z-form-removebutton" value="Remove avatar"
+      <input class="z-form-removebutton" value="Remove avatar" i18n:attributes="value"
 	     type="submit" name="form.button.removeAvatar" />
     </div>
   </div>
