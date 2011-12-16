@@ -1,0 +1,376 @@
+##############################################################################
+#
+# Copyright (c) 2003-2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+msgid ""
+msgstr ""
+"Project-Id-Version: Development/Unknown\n"
+"POT-Creation-Date: Thu Dec  8 23:20:41 2011\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: zope/app/locales/extract.py\n"
+
+#: src/zojax/principal/profile/avatar.zcml:26
+msgid "Avatars container"
+msgstr ""
+
+#: src/zojax/principal/profile/avatar.zcml:8
+msgid "Avatar Settings"
+msgstr ""
+
+#: src/zojax/principal/profile/avatar.zcml:8
+msgid "This area allows you to configure user avatar."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/avatarconfiglet.py:101
+msgid "Upload"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/avatarconfiglet.py:132
+msgid "Avatar sccessully uploaded."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/avatarconfiglet.py:139
+msgid "Select avatar"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/avatarconfiglet.py:147
+#: src/zojax/principal/profile/browser/avatarconfiglet.pt:8
+msgid "Avatar Gallery"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/avatarconfiglet.py:161
+#: src/zojax/principal/profile/browser/avatarconfiglet.pt:19
+msgid "Set as default"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/avatarconfiglet.py:168
+#: src/zojax/principal/profile/browser/avatarconfiglet.py:182
+msgid "Please select avatar."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/avatarconfiglet.py:173
+msgid "Default avatar has been selected."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/avatarconfiglet.py:175
+#: src/zojax/principal/profile/browser/avatarconfiglet.pt:21
+msgid "Remove avatar"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/avatarconfiglet.py:189
+msgid "Avatar has been removed."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/avatarconfiglet.py:84
+msgid "Upload avatar"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/avatarconfiglet.py:97
+#. Default: ""
+msgid "Create new avatar. Maximum size: ${width} x ${height} pixels."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/field.py:32
+msgid "E-Mail address already in use."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/interfaces.py:28
+msgid "First Name"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/interfaces.py:29
+msgid "e.g. John. This is how users on the site will identify you."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/interfaces.py:34
+msgid "Last Name"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/interfaces.py:35
+msgid "e.g. Smith. This is how users on the site will identify you."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/interfaces.py:40
+msgid "E-Mail"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/interfaces.py:41
+msgid "Enter your e-mail address. It will be used as address for email notifications."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/preference.py:198
+#: src/zojax/principal/profile/interfaces.py:129
+#: src/zojax/principal/profile/avatar.zcml:35
+msgid "Avatar"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/preference.py:204
+#: src/zojax/principal/profile/interfaces.py:134
+msgid "Avatar is a small image of you that will be displayed next to your blog posts or comments."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/preference.py:206
+#: src/zojax/principal/profile/interfaces.py:135
+msgid "You can upload the same image you used for your profile or choose a different one."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/preference.py:52
+msgid "Information"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefieldcategories.pt:18
+msgid "Remove"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefieldcategories.pt:2
+msgid "Categories"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefieldcategories.pt:22
+msgid "Move up"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefieldcategories.pt:25
+msgid "Move down"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefieldcategories.pt:28
+msgid "Sort"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefieldcategories.pt:35
+msgid "Add category"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefieldcategories.pt:41
+msgid "Add"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefieldcategories.pt:5
+msgid "No field categories have been created."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefields.py:105
+msgid "Category has been moved."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefields.py:112
+msgid "Categories has been sorted."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefields.py:45
+msgid "Fields ordering"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefields.py:51
+msgid "Field categories"
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefields.py:64
+msgid "Please enter category title."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefields.py:67
+msgid "Category already exists."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefields.py:71
+msgid "Category has been added."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefields.py:78
+#: src/zojax/principal/profile/browser/profilefields.py:94
+msgid "Please select categories."
+msgstr ""
+
+#: src/zojax/principal/profile/browser/profilefields.py:86
+msgid "Category has been removed."
+msgstr ""
+
+#: src/zojax/principal/profile/configure.zcml:12
+msgid "This area allows you to configure user profiles."
+msgstr ""
+
+#: src/zojax/principal/profile/configure.zcml:12
+msgid "User profiles"
+msgstr ""
+
+#: src/zojax/principal/profile/configure.zcml:32
+msgid "These are all the preferences related to user personal profile."
+msgstr ""
+
+#: src/zojax/principal/profile/configure.zcml:32
+msgid "Edit Profile"
+msgstr ""
+
+#: src/zojax/principal/profile/configure.zcml:62
+msgid "Registration Fields"
+msgstr ""
+
+#: src/zojax/principal/profile/configure.zcml:62
+msgid "This area allows you to configure registration fields."
+msgstr ""
+
+#: src/zojax/principal/profile/configure.zcml:7
+msgid "Manage profile fields"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:108
+msgid "Filterable"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:109
+msgid "Users can filter based on this field."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:124
+msgid "Profile image"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:125
+msgid "You can upload a JPG, GIF or PNG."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:139
+msgid "Timezone"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:144
+msgid "Profile data"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:148
+msgid "Registered"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:149
+msgid "Date of registration."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:153
+msgid "Last login time"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:154
+msgid "Date when principal last logged in."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:158
+msgid "Modified time"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:159
+msgid "Date when principal last modified its profile."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:209
+msgid "Title"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:210
+msgid "Avatar title."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:215
+msgid "Avatar image data."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:223
+msgid "Enable Avatars"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:224
+msgid "When Avatars are enabled, users may choose from preselected profile photos, or upload their own. If Disabled, users may only upload thier own profile photo."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:228
+msgid "Maximum Image Width"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:232
+msgid "Maximum Image Height"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:236
+msgid "Default avatar"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:265
+msgid "Registration fields"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:266
+msgid "List of fields user should fill during registration."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:50
+msgid "Use photo as avatar"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:51
+msgid "Use photo as avatar. Users will need reupload photos."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:81
+msgid "Searchable"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:82
+msgid "The value of this field will show up in search results."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:87
+msgid "Visible"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:88
+msgid "Whether or not the field is visible to the public."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:93
+msgid "Editable"
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:94
+msgid "Whether or not the field can be changed by the user."
+msgstr ""
+
+#: src/zojax/principal/profile/interfaces.py:99
+msgid "Category"
+msgstr ""
+
+#: src/zojax/principal/profile/mail.zcml:6
+msgid "Personal emails"
+msgstr ""
+
+#: src/zojax/principal/profile/profilefields.py:32
+msgid "User profile fields"
+msgstr ""
+
+#: src/zojax/principal/profile/profilefields.zcml:27
+msgid "Container for profile fields."
+msgstr ""
+
+#: src/zojax/principal/profile/profilefields.zcml:8
+msgid "This area allows you to configure user profile fields."
+msgstr ""
+
+#: src/zojax/principal/profile/profilefields.zcml:8
+#: src/zojax/principal/profile/profilefields.zcml:27
+msgid "Profile Fields"
+msgstr ""
+
