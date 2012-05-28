@@ -26,6 +26,7 @@ from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.traversing.api import getParents, getPath
 
 from zojax.preferences.interfaces import IPreferenceGroup
+from zojax.content.type.interfaces import IItem
 
 from interfaces import IAvatarConfiglet
 from interfaces import IProfileFields, IProfilesCategory, IPersonalProfile
@@ -58,7 +59,7 @@ class ProfileFieldsVocabulary(object):
                     path = getPath(i)[1:]
                     if path:
                         path += '/'
-                    terms.append((path+field.title, id))
+                    terms.append((path+IItem(field).title, id))
 
             terms.sort()
             return Vocabulary(
