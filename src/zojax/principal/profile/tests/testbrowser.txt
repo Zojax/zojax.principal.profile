@@ -105,6 +105,7 @@ User profiles configlet category
     ...
     </html>
 
+
 We can move up/down, sort categories
 
     >>> admin.getControl(name="form.widget.categories:list").value = ['Test category 2']
@@ -152,6 +153,7 @@ We can move up/down, sort categories
     >>> admin.getControl(name='form.widget.category').value = 'Test category'
     >>> admin.getControl(name='form.button.add').click()
     >>> admin.getLink('User profiles').click()
+
 
 
 First name, Last name, email
@@ -226,25 +228,27 @@ Profile photo and Timezone
     <DstTzInfo 'Asia/Almaty' LMT+5:08:00 STD>
 
 
+
+
 Profile fields
 --------------
 
     >>> admin.getLink('Profile Fields').click()
     >>> admin.getLink('Text Line').click()
-    >>> admin.getControl('Title').value = u'Name'
+    >>> admin.getControl('Title').value = u'TextLine'
     >>> admin.getControl(name="content.add.widgets.required:list").value = ['true']
     >>> admin.getControl(name="content.add.widgets.category:list").value = ['Test category']
     >>> admin.getControl(name="content.add.buttons.add").click()
     >>> admin.getControl(name="content.edit.buttons.cancel").click()
 
     >>> admin.getLink('Text Line').click()
-    >>> admin.getControl('Title').value = u'Title'
+    >>> admin.getControl('Title').value = u'TextLine-2'
     >>> admin.getControl(name="content.add.widgets.required:list").value = ['false']
     >>> admin.getControl(name="content.add.buttons.add").click()
     >>> admin.getControl(name="content.edit.buttons.cancel").click()
 
     >>> admin.getLink('Text Line').click()
-    >>> admin.getControl('Title').value = u'Company'
+    >>> admin.getControl('Title').value = u'TextLine-3'
     >>> admin.getControl(name="content.add.widgets.required:list").value = ['false']
     >>> admin.getControl(name="content.add.buttons.add").click()
     >>> admin.getControl(name="content.edit.buttons.cancel").click()
@@ -252,28 +256,32 @@ Profile fields
     >>> print admin.contents
     <html>
     ...
-    <td><a href="http://localhost/settings/principals/profile/default/TextLine/context.html">TextLine</a></td>
-    ...
-    <td><a href="http://localhost/settings/principals/profile/default/TextLine-2/context.html">TextLine-2</a></td>
-    ...
-    <td><a href="http://localhost/settings/principals/profile/default/TextLine-3/context.html">TextLine-3</a></td>
+      <tbody>
+        <tr class="z-table-record odd">
+          <td class="z-table-cell-min">...<a href="http://localhost/settings/principals/profile/default/textline/context.html">textline</a></td> <td>TextLine</td> <td>Text Line</td>
+        </tr> <tr class="z-table-record even">
+          <td class="z-table-cell-min">...<a href="http://localhost/settings/principals/profile/default/textline-2/context.html">textline-2</a></td> <td>TextLine-2</td> <td>Text Line</td>
+        </tr> <tr class="z-table-record odd">
+          <td class="z-table-cell-min">...<a href="http://localhost/settings/principals/profile/default/textline-3/context.html">textline-3</a></td> <td>TextLine-3</td> <td>Text Line</td>
+        </tr>
+      </tbody>
     ...
     </html>
 
     >>> fields = component.getUtility(interfaces.IProfileFields)
     >>> for field in fields.getFields():
     ...     print field.__name__, field, field.category
-    TextLine-3 <zojax.persistent.fields.fields.TextLine ...> None
-    TextLine <zojax.persistent.fields.fields.TextLine ...> Test category
-    TextLine-2 <zojax.persistent.fields.fields.TextLine ...> None
+    textline <zojax.persistent.fields.fields.TextLine ...> Test category
+    textline-2 <zojax.persistent.fields.fields.TextLine ...> None
+    textline-3 <zojax.persistent.fields.fields.TextLine ...> None
 
     >>> for field in fields:
     ...     print field
-    TextLine
-    TextLine-2
-    TextLine-3
+    textline
+    textline-2
+    textline-3
 
-    >>> print fields.get('TextLine')
+    >>> print fields.get('textline')
     <zojax.persistent.fields.fields.TextLine ...>
 
 
@@ -283,86 +291,77 @@ Let's check user profile
     >>> print user.contents
     <html>
     ...
-    ...<div class="z-form-group">
-    <div class="z-form-fieldset">
-      <div class="z-form-field">
-        <label for="category-widgets-TextLine-3">Company</label>
-          <div class="z-form-help"></div>
-          <div>
-            <input id="category-widgets-TextLine-3"
-               name="category.widgets.TextLine-3"
-               class="text-widget textline-field" value=""
-               type="text" />
-        </div>
-      </div>
-      <div class="z-form-field">
-        <label for="category-widgets-TextLine-2">Title</label>
-        <div class="z-form-help"></div>
-        <div>
-          <input id="category-widgets-TextLine-2"
-           name="category.widgets.TextLine-2"
-           class="text-widget textline-field" value=""
-           type="text" />
-        </div>
-      </div>
-    </div>
-    </div> <div class="z-form-group">
-      <h3 class="z-form-grouplabel">Test category</h3>
       <div class="z-form-fieldset">
         <div class="z-form-field">
-      <label for="category-widgets-TextLine">Name</label>
-      <span class="z-form-fieldRequired">&nbsp;</span>
+      <label for="category-widgets-textline-2">TextLine-2</label>
+    <BLANKLINE>
+    <BLANKLINE>
       <div class="z-form-help"></div>
       <div>
-         <input id="category-widgets-TextLine"
-           name="category.widgets.TextLine"
-           class="text-widget required textline-field" value=""
-           type="text" />
+        <input id="category-widgets-textline-2"
+               name="category.widgets.textline-2"
+               class="text-widget textline-field" value=""
+               type="text" />
+    <BLANKLINE>
+    </div>
+    </div> <div class="z-form-field">
+      <label for="category-widgets-textline-3">TextLine-3</label>
+    <BLANKLINE>
+    <BLANKLINE>
+      <div class="z-form-help"></div>
+      <div>
+        <input id="category-widgets-textline-3"
+               name="category.widgets.textline-3"
+               class="text-widget textline-field" value=""
+               type="text" />
+    <BLANKLINE>
     </div>
     </div>
-    </div>
+      </div>
+    </div> <div class="z-form-group">
+      <h3 class="z-form-grouplabel">Test category</h3>
     ...
     </html>
 
 
-    >>> user.getControl(name="category.widgets.TextLine").value = u'My name'
-    >>> user.getControl('Title').value = u'My title'
-    >>> user.getControl('Company').value = u'My company'
+    >>> user.getControl(name="category.widgets.textline").value = u'My name'
+    >>> user.getControl('TextLine-2').value = u'My title'
+    >>> user.getControl('TextLine-3').value = u'My company'
     >>> user.getControl(name="form.buttons.save").click()
 
     >>> user.open("http://localhost/people/user/profile/")
     >>> print user.contents
     <html>
     ...
-    <div class="z-form-group">
-      <div class="z-form-fieldset">
         <div class="z-form-field">
-      <label for="form-widgets-TextLine-3">Company</label>
+      <label for="form-widgets-textline-2">TextLine-2</label>
       <div>
-        <span id="form-widgets-TextLine-3"
-          class="text-widget textline-field">My company</span>
+        <span id="form-widgets-textline-2"
+              class="text-widget textline-field">My title</span>
+    <BLANKLINE>
     </div>
     </div> <div class="z-form-field">
-      <label for="form-widgets-TextLine-2">Title</label>
+      <label for="form-widgets-textline-3">TextLine-3</label>
       <div>
-        <span id="form-widgets-TextLine-2"
-          class="text-widget textline-field">My title</span>
+        <span id="form-widgets-textline-3"
+              class="text-widget textline-field">My company</span>
+    <BLANKLINE>
     </div>
     </div>
-    </div>
-    </div> <div class="z-form-group">
-    <h3 class="z-form-grouplabel">Test category</h3>
-    <div class="z-form-fieldset">
-      <div class="z-form-field">
-         <label for="form-widgets-TextLine">Name</label>
-         <div>
-           <span id="form-widgets-TextLine"
-            class="text-widget required textline-field">My name</span>
-         </div>
       </div>
-    </div>
+    </div> <div class="z-form-group">
+      <h3 class="z-form-grouplabel">Test category</h3>
+    <BLANKLINE>
+    <BLANKLINE>
+      <div class="z-form-fieldset">
+        <div class="z-form-field">
+      <label for="form-widgets-textline">TextLine</label>
+      <div>
+        <span id="form-widgets-textline"
+              class="text-widget required textline-field">My name</span>
     ...
     </html>
+
 
 
 Profile completeness
@@ -373,20 +372,20 @@ Should be complete if all required fields are set
     True
 
 And no if there are empty fields
-    >>> profile.setProfileData({'TextLine': None})
-    ['TextLine']
+    >>> profile.setProfileData({'textline': None})
+    ['textline']
     >>> profile.isComplete()
     False
 
-    >>> profile.setProfileData({'TextLine': 'My name'})
-    ['TextLine']
+    >>> profile.setProfileData({'textline': 'My name'})
+    ['textline']
 
 Fields config and order
 -----------------------
 
     >>> admin.getLink('Fields ordering').click()
     >>> admin.getControl(name='content.widgets.fields.from').displayOptions
-    ['Company', 'Name', 'Title']
+    ['TextLine', 'TextLine-2', 'TextLine-3']
     >>> options = admin.getControl(name='content.widgets.fields.from').options
 
 If we haven't selected any of fields, then we see all fields
@@ -394,46 +393,37 @@ If we haven't selected any of fields, then we see all fields
     >>> print user.contents
     <html>
     ...
-    ...<div class="z-form-group">
-    <div class="z-form-fieldset">
-      <div class="z-form-field">
-        <label for="category-widgets-TextLine-3">Company</label>
-          <div class="z-form-help"></div>
-          <div>
-             <input id="category-widgets-TextLine-3"
-               name="category.widgets.TextLine-3"
-               class="text-widget textline-field" value="My company"
-               type="text" />
-        </div>
-      </div>
-      <div class="z-form-field">
-        <label for="category-widgets-TextLine-2">Title</label>
-        <div class="z-form-help"></div>
-        <div>
-          <input id="category-widgets-TextLine-2"
-           name="category.widgets.TextLine-2"
-           class="text-widget textline-field" value="My title"
-           type="text" />
-        </div>
-      </div>
+      <div class="z-form-fieldset">
+        <div class="z-form-field">
+      <label for="category-widgets-textline-2">TextLine-2</label>
+      <div class="z-form-help"></div>
+      <div>
+        <input id="category-widgets-textline-2"
+               name="category.widgets.textline-2"
+               class="text-widget textline-field"
+               value="My title" type="text" />
     </div>
+    </div> <div class="z-form-field">
+      <label for="category-widgets-textline-3">TextLine-3</label>
+      <div class="z-form-help"></div>
+      <div>
+        <input id="category-widgets-textline-3"
+               name="category.widgets.textline-3"
+               class="text-widget textline-field"
+               value="My company" type="text" />
+    </div>
+    </div>
+      </div>
     </div> <div class="z-form-group">
       <h3 class="z-form-grouplabel">Test category</h3>
       <div class="z-form-fieldset">
         <div class="z-form-field">
-      <label for="category-widgets-TextLine">Name</label>
+      <label for="category-widgets-textline">TextLine</label>
       <span class="z-form-fieldRequired">&nbsp;</span>
       <div class="z-form-help"></div>
-      <div>
-        <input id="category-widgets-TextLine"
-           name="category.widgets.TextLine"
-           class="text-widget required textline-field" value="My name"
-           type="text" />
-    </div>
-    </div>
-    </div>
-    ...
+      ...
     </html>
+
 
 Let's select 'Company' field
 
@@ -442,74 +432,78 @@ Let's select 'Company' field
     >>> print user.contents
     <html>
     ...
-    ...<div class="z-form-group">
-      <div class="z-form-fieldset">
         <div class="z-form-field">
-      <label for="category-widgets-TextLine-3">Company</label>
+      <label for="category-widgets-textline">TextLine</label>
+      <span class="z-form-fieldRequired">&nbsp;</span>
       <div class="z-form-help"></div>
       <div>
-        <input id="category-widgets-TextLine-3"
-           name="category.widgets.TextLine-3"
-           class="text-widget textline-field" value="My company"
-           type="text" />
-    </div>
-    </div>
-    </div>
+        <input id="category-widgets-textline"
+               name="category.widgets.textline"
+               class="text-widget required textline-field"
+               value="My name" type="text" />
     ...
     </html>
+
+
 
 Let's select 'Title' then 'Company' fields
 
     >>> admin.open('?content.widgets.fields:list='+options[2]+'&content.widgets.fields:list='+options[0]+'&content.edit.buttons.save=')
     >>> admin.getControl(name='content.widgets.fields.to').displayOptions
-    ['Title', 'Company']
+    ['TextLine-3', 'TextLine']
     >>> user.open("http://localhost/people/user/profile/profile/")
     >>> print user.contents
     <html>
     ...
-    ...<div class="z-form-group">
       <div class="z-form-fieldset">
         <div class="z-form-field">
-      <label for="category-widgets-TextLine-2">Title</label>
+      <label for="category-widgets-textline-3">TextLine-3</label>
       <div class="z-form-help"></div>
       <div>
-        <input id="category-widgets-TextLine-2"
-           name="category.widgets.TextLine-2"
-           class="text-widget textline-field" value="My title"
-           type="text" />
+        <input id="category-widgets-textline-3"
+               name="category.widgets.textline-3"
+               class="text-widget textline-field"
+               value="My company" type="text" />
     </div>
-    </div> <div class="z-form-field">
-      <label for="category-widgets-TextLine-3">Company</label>
+    </div>
+      </div>
+    </div> <div class="z-form-group">
+      <h3 class="z-form-grouplabel">Test category</h3>
+      <div class="z-form-fieldset">
+        <div class="z-form-field">
+      <label for="category-widgets-textline">TextLine</label>
+      <span class="z-form-fieldRequired">&nbsp;</span>
       <div class="z-form-help"></div>
       <div>
-         <input id="category-widgets-TextLine-3"
-           name="category.widgets.TextLine-3"
-           class="text-widget textline-field" value="My company"
-           type="text" />
+        <input id="category-widgets-textline"
+               name="category.widgets.textline"
+               class="text-widget required textline-field"
+               value="My name" type="text" />
     </div>
     </div>
-    ...
+     ...
     </html>
+
 
 
 Rename field
 ------------
 
     >>> admin.getLink('Contents').click()
-    >>> admin.getControl(name='ids:list').value = ['TextLine-3']
+    >>> admin.getControl(name='ids:list').value = ['textline-3']
     >>> admin.getControl(name='form.buttons.rename').click()
 
-    >>> field = fields['TextLine-3']
+    >>> field = fields['textline-3']
     >>> fid = root['ids'].getId(field)
-    >>> oldvalue = profile.getProfileData()['TextLine-3']
+    >>> oldvalue = profile.getProfileData()['textline-3']
 
-    >>> admin.getControl(name='newIds:list').value = u'TextLine10'
+    >>> admin.getControl(name='newIds:list').value = u'textline10'
     >>> admin.getControl(name="form.buttons.apply").click()
 
-    >>> field = fields['TextLine10']
+    >>> field = fields['textline10']
     >>> root['ids'].getId(field) == fid
     True
-    >>> oldvalue == profile.getProfileData()['TextLine10']
+    >>> oldvalue == profile.getProfileData()['textline10']
     True
 
     >>> user.open("http://localhost/people/user/profile/profile/")
@@ -517,8 +511,8 @@ Rename field
     <html>
     ...
     <div>
-       <input id="category-widgets-TextLine10"
-           name="category.widgets.TextLine10"
+       <input id="category-widgets-textline10"
+           name="category.widgets.textline10"
            class="text-widget textline-field" value="My company"
            type="text" />
     ...
@@ -529,11 +523,11 @@ Remove field
 ------------
 
     >>> admin.getLink('Contents').click()
-    >>> admin.getControl(name='ids:list').value = ['TextLine10']
+    >>> admin.getControl(name='ids:list').value = ['textline10']
     >>> admin.getControl(name="form.buttons.delete").click()
 
     >>> user.open("http://localhost/people/user/profile/profile/")
-    >>> 'name="form.widgets.TextLine-3"' in user.contents
+    >>> 'name="form.widgets.textline-3"' in user.contents
     False
 
 
@@ -548,6 +542,8 @@ Avatar settings configlet
     >>> configlet = component.getUtility(interfaces.IAvatarConfiglet)
     >>> configlet.maxWidth, configlet.maxHeight
     (100, 100)
+
+
 
 Upload avatar
 
@@ -593,6 +589,8 @@ we can view avatar
     >>> user.contents[:10]
     '\xff\xd8\xff\xe0\x00\x10JFIF'
 
+
+
 upload second avatar
 
     >>> fileControl = admin.getControl('File').mech_control
@@ -632,6 +630,7 @@ select different user avatar
     >>> user.open('http://127.0.0.1/@@profile.avatar/%s/99968e477ecdbe642e70a6f3d07fdb1f'%aid2)
     >>> user.contents[:10]
     '\xff\xd8\xff\xe0\x00\x10JFIF'
+
 
 
 Upload custom avatar
@@ -674,28 +673,29 @@ Disabled default avatars
     >>> admin.getControl(name="form.widgets.enabled:list").value = ['false']
     >>> admin.getControl(name="form.buttons.save").click()
 
+
 use can select only custom avatar
 
     >>> user.open("http://localhost/people/user/profile/profile/")
     >>> print user.contents
     <html>
     ...
-    <div class="z-form-fieldset">
-      <div class="z-form-field">
-        <label for="form-widgets-avatar" title="">Avatar</label>
-        <div class="z-form-help"></div>
-        <div><ul class="z-hlisting">
-          <li><div class="z-listing-item">
-            <input type="radio" id="form-widgets-avatar-0" name="form.widgets.avatar:list" title="0" checked="True" value="0" />
-            <img class="z-listing-selected" src="http://localhost/@@profile.avatar/zope.user" />
-            &nbsp;&nbsp;&nbsp;&nbsp;
-          </div></li>
-        </ul>
-        <div style="clear: both;">
-            <input name="form.widgets.avatar-empty-marker"
-                type="hidden" value="1" />
-        </div>
-      </div>
+      <div class="z-form-fieldset">
+        <div class="z-form-field">
+      <label for="form-widgets-avatar" title="">Avatar</label>
+      <div class="z-form-help"></div>
+      <div><ul class="z-hlisting">
+      <li><div class="z-listing-item">
+      <input type="radio" id="form-widgets-avatar-0" name="form.widgets.avatar:list" title="0" checked="True" value="0" />
+      <img class="z-listing-selected" src="http://localhost/@@profile.avatar/zope.user...
+      &nbsp;&nbsp;&nbsp;&nbsp;
+    </div></li>
+    </ul>
+    <div style="clear: both;">
+      <input name="form.widgets.avatar-empty-marker"
+             type="hidden" value="1" />
+    </div>
+    </div>
     ...
     </html>
 
